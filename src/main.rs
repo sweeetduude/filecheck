@@ -1,5 +1,5 @@
 use std::fs;
-use std::io::{self, Write};
+use std::io::{stdin, stdout, Write};
 use std::path::PathBuf;
 
 fn write_to_file(output_file: &str, name: &str, path: &str) {
@@ -54,22 +54,21 @@ fn main() {
     println!("5. List both folders and files in the current directory");
     println!("6. List folders and files in all underlying directories");
     print!("Enter your choice: ");
-    io::stdout().flush().unwrap();
+    stdout().flush().unwrap();
 
-    let mut choice = String::new();
-    io::stdin().read_line(&mut choice).unwrap();
-    let choice = choice.trim().parse::<u32>().unwrap();
+    let mut user_input = String::new();
+    stdin().read_line(&mut user_input).unwrap();
 
-    let write_files = match choice {
-        3 | 4 | 5 | 6 => true,
+    let write_files = match user_input.trim().to_lowercase().as_str() {
+        "3" | "4" | "5" | "6" => true,
         _ => false,
     };
-    let write_folders = match choice {
-        1 | 2 | 5 | 6 => true,
+    let write_folders = match user_input.trim().to_lowercase().as_str() {
+        "1" | "2" | "5" | "6" => true,
         _ => false,
     };
-    let recursive = match choice {
-        2 | 4 | 6 => true,
+    let recursive = match user_input.trim().to_lowercase().as_str() {
+        "2" | "4" | "6" => true,
         _ => false,
     };
 
@@ -81,13 +80,5 @@ fn main() {
             write_folders,
             recursive,
         );
-    }
-
-    if write_files && write_folders {
-        println!("Folders and files written to results.txt");
-    } else if write_files {
-        println!("Files written to results.txt");
-    } else if write_folders {
-        println!("Folders written to results.txt");
     }
 }
