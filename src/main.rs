@@ -46,10 +46,6 @@ fn list_files(
 }
 
 fn main() {
-    let mut write_files = false;
-    let mut write_folders = false;
-    let mut list_all = false;
-
     println!("Choose an option:");
     println!("1. List all folders in the current directory");
     println!("2. List all folders in all underlying directories");
@@ -64,43 +60,28 @@ fn main() {
     io::stdin().read_line(&mut choice).unwrap();
     let choice = choice.trim().parse::<u32>().unwrap();
 
-    match choice {
-        1 => {
-            write_folders = true;
-        }
-        2 => {
-            write_folders = true;
-            list_all = true;
-        }
-        3 => {
-            write_files = true;
-        }
-        4 => {
-            write_files = true;
-            list_all = true;
-        }
-        5 => {
-            write_files = true;
-            write_folders = true;
-        }
-        6 => {
-            write_files = true;
-            write_folders = true;
-            list_all = true;
-        }
-        _ => {
-            println!("Invalid choice");
-            return;
-        }
-    }
+    let write_files = match choice {
+        3 | 4 | 5 | 6 => true,
+        _ => false,
+    };
+    let write_folders = match choice {
+        1 | 2 | 5 | 6 => true,
+        _ => false,
+    };
+    let recursive = match choice {
+        2 | 4 | 6 => true,
+        _ => false,
+    };
 
-    list_files(
-        &PathBuf::from("."),
-        "results.txt",
-        write_files,
-        write_folders,
-        list_all,
-    );
+    if write_files | write_folders {
+        list_files(
+            &PathBuf::from("."),
+            "results.txt",
+            write_files,
+            write_folders,
+            recursive,
+        );
+    }
 
     if write_files && write_folders {
         println!("Folders and files written to results.txt");
